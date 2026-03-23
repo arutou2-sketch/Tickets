@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сообщить о проблеме</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 16px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    label { display: block; margin: 12px 0 6px; font-weight: 600; }
+    input, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 16px;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    button { margin-top: 16px; cursor: pointer; }
+    #result { margin-top: 12px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <form id="supportForm">
+      <label for="problem">Опишите проблему</label>
+      <textarea id="problem" name="problem" required></textarea>
+
+      <label for="company_name">Название компании</label>
+      <input type="text" id="company_name" name="company_name" required>
+
+      <input type="hidden" id="form_secret" name="form_secret" value="ВАШ_СЕКРЕТ">
+
+      <button type="submit">Отправить</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://ВАШ-ДОМЕН-N8N/webhook/support-form";
+
+    document.getElementById("supportForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        problem: document.getElementById("problem").value.trim(),
+        company_name: document.getElementById("company_name").value.trim(),
+        form_secret: document.getElementById("form_secret").value
+      };
+
+      const result = document.getElementById("result");
+      result.textContent = "Отправка...";
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          result.textContent = "Ошибка отправки";
+          return;
+        }
+
+        result.textContent = "Заявка отправлена";
+        document.getElementById("supportForm").reset();
+      } catch (err) {
+        result.textContent = "Сеть недоступна или webhook не отвечает";
+      }
+    });
+  </script>
+</body>
+</html>
