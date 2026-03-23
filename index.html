@@ -76,6 +76,9 @@ content="default-src 'self';
       <label for="problem">Опишите проблему</label>
       <textarea id="problem" name="problem" required></textarea>
 
+      <label for="integration_table_url">(необязательно) Ссылка на таблицу интеграции. Добавлять, если задача сделать интеграцию</label>
+      <input type="url" id="integration_table_url" name="integration_table_url" placeholder="https://...">
+
       <button type="submit">Отправить</button>
     </form>
 
@@ -90,7 +93,8 @@ content="default-src 'self';
 
       const payload = {
         company_name: document.getElementById("company_name").value.trim(),
-        problem: document.getElementById("problem").value.trim()
+        problem: document.getElementById("problem").value.trim(),
+        integration_table_url: document.getElementById("integration_table_url").value.trim()
       };
 
       const result = document.getElementById("result");
